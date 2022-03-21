@@ -5,25 +5,45 @@ import optparse
 
 driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "123"))
 
-def PageRank(session):
+def create_graph(session):
     query = """
-    CALL gds.pagerank.stream('Paper', 'Cite', {iterations:20, dampingFactor:0.85})
+    CALL gds.graph.create('myGraph','Paper','Cite')
+    """
+    session.run(query)
+    
+def create_graph2(session):
+    query = """  
+    CALL gds.graph.create('myGraph2','Paper',{
+        Cite: {
+            orientation: 'UNDIRECTED'
+        }
+    }
+    """
+    session.run(query)
+
+    
+def pageRank(session):
+    query = """
+    CALL gds.pageRank.stream('myGraph')
     YIELD nodeId, score
-    RETURN algo.getNodeById(nodeId).title AS paper,score
+    RETURN gds.util.asNode(nodeId).title AS paper,score
     ORDER BY score DESC
     """
     session.run(query)
 
     
-def coauthor_SCC(session):
+def triangleCount(session):
     query = """
-    CALL gds.alpha.scc.stream('Author', 'CoauthorWith', {})
-    YIELD nodeId, community
-    RETURN community, COLLECT(algo.getNodeById(nodeId).name) AS authorList
+    CALL gds.triangleCount.stream('myGraph2')
+    YIELD nodeId, triangleCount
+    RETURN gds.util.asNode(nodeId).title AS title, triangleCount
+    ORDER BY triangleCount DESC
     """
     session.run(query)
 
 
 with driver.session() as session:
-    PageRank(session)
-    coauthor_SCC(session)
+    create_graph(session)
+    pageRank(session)
+    create_graph2(session)
+    triangleCount(session)
