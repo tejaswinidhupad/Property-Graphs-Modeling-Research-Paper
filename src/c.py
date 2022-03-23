@@ -1,7 +1,5 @@
 from neo4j import GraphDatabase, basic_auth
-import configparser
 import pandas as pd
-import optparse
 
 driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "123"))
 
