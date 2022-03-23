@@ -2,7 +2,7 @@
 This is a hands-on lab on Property Graphs. We will be using what is, most probably, the most popular property graph database: Neo4j. We will practice how to create and manage graphs, as well as querying/processing them.
 
 # To run the code
-Create a noe4j service on "localhost:7687" and set passward as "123".
+Create a Neo4j service on "localhost:7687" and set passward as "123".
 Install Graph Data Science Library.
 
 ## Instantiating/Loading
